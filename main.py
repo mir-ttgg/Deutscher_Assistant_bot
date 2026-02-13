@@ -1,18 +1,20 @@
-import sys
 import asyncio
 import logging
-
+import sys
+from datetime import datetime
 from os import getenv
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
 
-from app.handers import router
-from datebase.config import init_db, DatabaseMiddleware, session_pool
-from datetime import datetime
-from zoneinfo import ZoneInfo
 load_dotenv()
+
+from app.handers import router
+from datebase.config import DatabaseMiddleware, init_db, session_pool
+
+
 
 
 class MoscowFormatter(logging.Formatter):
@@ -64,6 +66,7 @@ dp.include_router(router)
 
 dp.callback_query.middleware(DatabaseMiddleware(session_pool))
 dp.message.middleware(DatabaseMiddleware(session_pool))
+
 
 async def main() -> None:
     logger = setup_logging()
